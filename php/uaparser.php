@@ -26,12 +26,6 @@
  *   - Ryan Parman (https://github.com/skyzyx)
  *   - Pravin Dahal (https://github.com/pravindahal)
  */
-
-// address 5.1 compatibility
-if (!function_exists('json_decode') || !function_exists('json_encode')) {
-    require_once(dirname(__FILE__).DIRECTORY_SEPARATOR.'lib/json/jsonwrapper.php');
-}
-
 class UAParser {
     
     protected $regexes;
@@ -46,33 +40,7 @@ class UAParser {
         if (file_exists($regexesFile)) {
             $this->regexes = json_decode(file_get_contents($regexesFile));
         } else {
-            $title            = 'Error loading ua-parser';
-            if ($customRegexesFile !== null) {
-                $message      = 'ua-parser can\'t find the custom regexes file you supplied ('.$customRegexesFile.'). Please make sure you have the correct path.';
-                $instruction1 = '';
-                $instruction2 = '';
-            } else {
-                $message      = 'Please download the regexes.json file before using uaparser.php. You can type the following at the command line to download the latest version: ';
-                $instruction1 = '%: cd /path/to/UAParser/';
-                $instruction2 = '%: php uaparser-cli.php -g';
-            }
-            
-            if (php_sapi_name() == 'cli') {
-                print "\n".$title."\n";
-                print $message."\n\n";
-                print "    ".$instruction2."\n\n";
-            } else {
-                print '<html><head><title>'.$title.'</title></head><body>';
-                print '<h1>'.$title.'</h1>';
-                print '<p>'.$message.'</p>';
-                print '<blockquote>';
-                print '<code>'.$instruction1.'</code><br>';
-                print '<code>'.$instruction2.'</code>';
-                print '</blockquote>';
-                print '</body></html>';
-            }
-
-            exit;
+            throw new Exception("ua-parser can't find $regexesFile");
         }
     }
     
